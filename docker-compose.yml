@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  # 1. SERVICIO DNS: Pi-hole (Bloqueador de publicidad y DNS local)
+  dns_server:
+    image: pihole/pihole:latest
+    container_name: mi_dns_pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8081:80/tcp" # Interfaz web de Pi-hole en el puerto 8081
+    environment:
+      TZ: 'America/Lima'
+      WEBPASSWORD: ${PIHOLE_WEBPASSWORD} # Cambia esta contraseña para entrar al panel
+    volumes:
+      - ./pihole:/etc/pihole
+      - ./dnsmasq.d:/etc/dnsmasq.d
+    restart: always
+
+  # 2. BASE DE DATOS: PostgreSQL
+  base_datos:
+    image: postgres:15
+    container_name: mi_postgres
+    environment:
+      POSTGRES_USER: usuario_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: mi_base_datos
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  # 3. FIREWALL / PROXY: Nginx Proxy Manager (Controla accesos, puertos y certificados SSL)
+  firewall_proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: mi_firewall_proxy
+    ports:
+      - '80:80'   # Tráfico HTTP normal
+      - '443:443' # Tráfico HTTPS seguro
+      - '81:81'   # Interfaz web de administración del proxy
+    volumes:
+      - ./proxy/data:/data
+      - ./proxy/letsencrypt:/etc/letsencrypt
+    restart: always
+
