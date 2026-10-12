@@ -1,0 +1,6 @@
+Reporte generado: 2026-10-12 14:21:40
+Equipo: PC06
+Sistema: Windows 11
+Procesadores: 20
+Disco C:\ 186.4 GB usados de 499.1 GB
+Memoria: 7849 MB disponibles de 16153 MB

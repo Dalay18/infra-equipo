@@ -1,0 +1,153 @@
+﻿**********************
+Inicio de la transcripción de Windows PowerShell
+Hora de inicio: 20261012142509
+Nombre de usuario: PC06\Usuario
+Usuario RunAs: PC06\Usuario
+Nombre de la configuración: 
+Máquina: PC06 (Microsoft Windows NT 10.0.26200.0)
+Aplicación host: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+Id. de proceso: 3344
+PSVersion: 5.1.26100.8115
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.26100.8115
+BuildVersion: 10.0.26100.8115
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+La transcripción ha comenzado. El archivo de salida es C:\Users\Usuario\automatizacion\evidencia.txt
+PS C:\WINDOWS\System32> Get-ChildItem "$HOME\respaldos" | Select-Object Name, Length, LastWriteTime
+
+Name                             Length LastWriteTime
+----                             ------ -------------
+respaldo.log                        392 12/10/2026 14:22:58
+respaldo_2026-10-06_18-41-19.zip   6874 6/10/2026 18:41:20
+respaldo_2026-10-12_14-18-13.zip   6874 12/10/2026 14:18:13
+respaldo_2026-10-12_14-22-33.zip   8591 12/10/2026 14:22:34
+respaldo_2026-10-12_14-22-58.zip   8591 12/10/2026 14:22:58
+
+
+PS C:\WINDOWS\System32> Get-Content "$HOME\respaldos\respaldo.log"
+2026-10-06 18:41:20 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-06_18-41-19.zip
+2026-10-12 14:18:13 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-12_14-18-13.zip
+2026-10-12 14:22:34 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-12_14-22-33.zip
+2026-10-12 14:22:58 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-12_14-22-58.zip
+PS C:\WINDOWS\System32> $a = "$HOME\automatizacion"; $r = "$HOME\respaldos"
+PS C:\WINDOWS\System32> function Seccion($t) { Write-Host "`n=== $t ===" -ForegroundColor Cyan }
+PS C:\WINDOWS\System32> function Mostrar($t, [scriptblock]$cmd) {
+    Seccion $t
+    try { & $cmd -ErrorAction Stop } catch { Write-Host "[FALTA] No se encontró: $($_.Exception.Message)" -ForegroundColor Yellow }
+}
+PS C:\WINDOWS\System32> Mostrar "1. Usuario y fecha" { whoami; Get-Date }
+
+=== 1. Usuario y fecha ===
+
+
+lunes, 12 de octubre de 2026 14:40:06
+
+
+PS C:\WINDOWS\System32> Mostrar "2. Archivos de la actividad" { Get-ChildItem $a -ErrorAction Stop | Select-Object Name, Length, LastWriteTime }
+
+=== 2. Archivos de la actividad ===
+
+Name          Length LastWriteTime
+----          ------ -------------
+evidencia.txt      0 12/10/2026 14:25:09
+procesos.csv     662 6/10/2026 18:07:46
+reporte.ps1      503 6/10/2026 18:07:44
+reporte.py      1655 12/10/2026 14:18:22
+reporte.txt      173 12/10/2026 14:21:40
+respaldo.ps1     601 12/10/2026 14:18:12
+servicios.csv  18065 6/10/2026 18:07:46
+
+
+PS C:\WINDOWS\System32> Mostrar "3. Servicios (5 primeros)" { Import-Csv "$a\servicios.csv" -ErrorAction Stop | Select-Object -First 5 | Format-Table }
+
+=== 3. Servicios (5 primeros) ===
+
+Name            DisplayName                                         Status
+----            -----------                                         ------
+AarSvc_2c2a74   Agent Activation Runtime_2c2a74                     Stopped
+AdobeARMservice Adobe Acrobat Update Service                        Running
+ADPSvc          Servicio de plataforma de datos agregados           Stopped
+ALG             Servicio de puerta de enlace de nivel de aplicación Stopped
+AppIDSvc        Identidad de aplicación                             Stopped
+
+
+PS C:\WINDOWS\System32> Mostrar "4. Procesos con más CPU" { Import-Csv "$a\procesos.csv" -ErrorAction Stop | Format-Table }
+
+=== 4. Procesos con más CPU ===
+
+Name            Id    CPU        WorkingSet
+----            --    ---        ----------
+VirtualBoxVM    1040  518.75     118013952
+chrome          14020 396.9375   495202304
+chrome          7272  297.40625  239878144
+System          4     262.140625 167936
+chrome          11024 246.78125  258920448
+dwm             9916  245.328125 137674752
+MsMpEng         3652  161.265625 278720512
+GCloud          12176 159.765625 29581312
+chrome          12932 144.28125  422940672
+explorer        10032 59.84375   192778240
+ApCent          4152  41.546875  96813056
+chrome          8680  41.203125  60264448
+chrome          7660  40.5625    280748032
+VirtualBox      13092 28.640625  70914048
+AdobeCollabSync 11340 27.828125  11718656
+
+
+PS C:\WINDOWS\System32> Mostrar "5. Respaldos" { Get-ChildItem $r -ErrorAction Stop | Select-Object Name, Length, LastWriteTime }
+
+=== 5. Respaldos ===
+
+Name                             Length LastWriteTime
+----                             ------ -------------
+respaldo.log                        392 12/10/2026 14:22:58
+respaldo_2026-10-06_18-41-19.zip   6874 6/10/2026 18:41:20
+respaldo_2026-10-12_14-18-13.zip   6874 12/10/2026 14:18:13
+respaldo_2026-10-12_14-22-33.zip   8591 12/10/2026 14:22:34
+respaldo_2026-10-12_14-22-58.zip   8591 12/10/2026 14:22:58
+
+
+PS C:\WINDOWS\System32> Mostrar "6. Log del respaldo" { Get-Content "$r\respaldo.log" -ErrorAction Stop }
+
+=== 6. Log del respaldo ===
+2026-10-06 18:41:20 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-06_18-41-19.zip
+2026-10-12 14:18:13 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-12_14-18-13.zip
+2026-10-12 14:22:34 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-12_14-22-33.zip
+2026-10-12 14:22:58 Respaldo creado: C:\Users\Usuario\respaldos\respaldo_2026-10-12_14-22-58.zip
+PS C:\WINDOWS\System32> Mostrar "7. Tarea programada" { Get-ScheduledTask -TaskName "RespaldoDiario" -ErrorAction Stop | Select-Object TaskName, State; Get-ScheduledTaskInfo -TaskName "RespaldoDiario" -ErrorAction Stop | Format-List LastRunTime, LastTaskResult, NextRunTime }
+
+=== 7. Tarea programada ===
+
+TaskName       State
+--------       -----
+RespaldoDiario Ready
+
+
+
+
+LastRunTime    : 12/10/2026 14:22:57
+LastTaskResult : 0
+NextRunTime    : 13/10/2026 02:00:00
+
+
+
+PS C:\WINDOWS\System32> Mostrar "8. Reporte de Python" { Get-Content "$a\reporte.txt" -ErrorAction Stop }
+
+=== 8. Reporte de Python ===
+Reporte generado: 2026-10-12 14:21:40
+Equipo: PC06
+Sistema: Windows 11
+Procesadores: 20
+Disco C:\ 186.4 GB usados de 499.1 GB
+Memoria: 7849 MB disponibles de 16153 MB
+PS C:\WINDOWS\System32> Stop-Transcript
+**********************
+Fin de la transcripción de Windows PowerShell
+Hora de finalización: 20261012144018
+**********************
+
+Usuario: Usuario - Equipo: PC06
